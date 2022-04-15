@@ -65,6 +65,7 @@ public class Produto {
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 ", preco=" + preco +
+                ", qtd=" + qtd +
                 '}';
     }
 }

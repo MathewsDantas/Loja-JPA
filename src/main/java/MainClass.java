@@ -61,10 +61,39 @@ public class MainClass {
     }
 
     public static void excluirProduto(){
+        System.out.println("--> Excluindo produto: ");
+        DAO<Produto> dao = new DAO<>(Produto.class);
+        listarProduto();
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("Insira o Id para excluir: ");
+        long id = entrada.nextLong();
 
+        dao.ExcluirId(id);
     }
 
     public static void atualizarProduto(){
+        System.out.println("--> Atualizando produto: ");
+        DAO<Produto> dao = new DAO<>(Produto.class);
+        listarProduto();
 
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("Insira o Id para atualizar: ");
+        long id = entrada.nextLong();
+        entrada.nextLine();
+        Produto produto = dao.obterPorId(id);
+        dao.abrirTransition();
+        System.out.println("Informe o nome do produto a ser atualizado: ");
+        String nome = entrada.nextLine();
+        produto.setNome(nome);
+
+        System.out.println("Informe o preco do produto a ser atualizado: ");
+        Double preco = entrada.nextDouble();
+        produto.setPreco(preco);
+
+        System.out.println("Informe a qtd do produto a ser atualizado: ");
+        Long qtd = entrada.nextLong();
+        produto.setQtd(qtd);
+
+        dao.AtualizarId(produto);
     }
 }

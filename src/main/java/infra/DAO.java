@@ -62,6 +62,18 @@ public class DAO <T>{
         return query.getResultList();
     }
 
+    public void ExcluirId(Long id){
+        T enti = obterPorId(id);
+        abrirTransition();
+        em.remove(enti);
+        fecharTransition();
+    }
+
+    public void AtualizarId(T enti){
+        em.merge(enti);
+        fecharTransition();
+    }
+
     public void fechar(){
         em.close();
     }
