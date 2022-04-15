@@ -1,34 +1,106 @@
 import infra.DAO;
+import modelo.Cliente;
 import modelo.Produto;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class MainClass {
+
+    private static Cliente clienteLogin = null;
+
     public static void main(String[] args) {
         System.out.println("====== TESTE JPA ======");
-        int op;
+        int op = 0 ;
+        int perfil = 0;
         do {
-            op = menu();
-            switch (op){
-                case 1 -> inserirProduto();
-                case 2 -> listarProduto();
-                case 3 -> excluirProduto();
-                case 4 -> atualizarProduto();
+            if (perfil == 0){
+                op = 0;
+                perfil = menuPerfil();
+            }
+
+            if (perfil == 2) {
+                op = menuFuncionario();
+                switch (op) {
+                    case 1 -> inserirProduto();
+                    case 2 -> listarProduto();
+                    case 3 -> excluirProduto();
+                    case 4 -> atualizarProduto();
+                    case 99 -> perfil = 0;
+                }
+            }
+
+            if (perfil == 1 && clienteLogin == null){
+                op = menuClienteLogin();
+                switch (op){
+                    case 1 -> ClienteLogin();
+                    case 99 -> perfil = 0;
+                }
+            }
+            if (perfil == 1 && clienteLogin != null){
+                op = menuCliente();
+                switch (op){
+                    case 1 -> inserirCarrinho();
+                    case 99 -> ClienteLogout();
+                }
             }
         }
         while (op != 0);
         System.out.println("-> Finalizado. ");
     }
 
-    public static int menu(){
-        System.out.println("------ MENU ------");
+    public static int menuFuncionario(){
+        System.out.println("------ MENU FUNCIONARIO ------");
         System.out.println("1 - Inserir Produto.");
         System.out.println("2 - Listar Produto.");
         System.out.println("3 - Excluir Produto.");
         System.out.println("4 - Atualizar Produto.");
         System.out.println("0 - Finalizar.");
+        System.out.println("99 - Voltar.");
         System.out.println("Informe a opcao: ");
+        Scanner entrada = new Scanner(System.in);
+        return entrada.nextInt();
+    }
+
+    public static int menuCliente(){
+        System.out.println("------ MENU CLIENTE ------");
+        System.out.println("1 - Comprar.");
+        System.out.println("2 - Visualizar carrinho.");
+        System.out.println("3 - Finalizar compra.");
+        System.out.println("99 - Voltar.");
+        System.out.println("0 - Finalizar.");
+        System.out.println("Informe a opcao: ");
+        Scanner entrada = new Scanner(System.in);
+        return entrada.nextInt();
+    }
+
+    public static int menuClienteLogin(){
+        System.out.println("------ MENU CLIENTE ------");
+        System.out.println("1 - Login.");
+        System.out.println("99 - Voltar.");
+        System.out.println("0 - Finalizar.");
+        Scanner entrada = new Scanner(System.in);
+        return entrada.nextInt();
+    }
+
+    public static void ClienteLogin(){
+        System.out.println("------ Login do Cliente ------");
+        // listar os clientes
+        // informar o id do cliente
+        // clientelogin = recebe o cliente.
+    }
+
+    public static void ClienteLogout(){
+        System.out.println("Logout Cliente.");
+        clienteLogin = null;
+    }
+
+    public static int menuPerfil(){
+        System.out.println("------ MENU PERFIL ------");
+        System.out.println("1 - Cliente.");
+        System.out.println("2 - Funcionario.");
+        System.out.println("0 - Finalizar.");
+        System.out.println("Escolha o perfil: ");
         Scanner entrada = new Scanner(System.in);
         return entrada.nextInt();
     }
@@ -95,5 +167,8 @@ public class MainClass {
         produto.setQtd(qtd);
 
         dao.AtualizarId(produto);
+    }
+
+    public static void inserirCarrinho(){
     }
 }
