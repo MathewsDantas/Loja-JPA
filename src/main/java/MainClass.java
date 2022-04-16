@@ -2,6 +2,7 @@ import infra.DAO;
 import modelo.Cliente;
 import modelo.Produto;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
@@ -26,6 +27,7 @@ public class MainClass {
                     case 2 -> listarProduto();
                     case 3 -> excluirProduto();
                     case 4 -> atualizarProduto();
+                    case 5 -> listarCliente();
                     case 99 -> perfil = 0;
                 }
             }
@@ -34,6 +36,7 @@ public class MainClass {
                 op = menuClienteLogin();
                 switch (op){
                     case 1 -> ClienteLogin();
+                    case 2 -> ClienteCadastro();
                     case 99 -> perfil = 0;
                 }
             }
@@ -55,6 +58,7 @@ public class MainClass {
         System.out.println("2 - Listar Produto.");
         System.out.println("3 - Excluir Produto.");
         System.out.println("4 - Atualizar Produto.");
+        System.out.println("5 - Listar Clientes.");
         System.out.println("0 - Finalizar.");
         System.out.println("99 - Voltar.");
         System.out.println("Informe a opcao: ");
@@ -77,6 +81,7 @@ public class MainClass {
     public static int menuClienteLogin(){
         System.out.println("------ MENU CLIENTE ------");
         System.out.println("1 - Login.");
+        System.out.println("2 - Cadastrar.");
         System.out.println("99 - Voltar.");
         System.out.println("0 - Finalizar.");
         Scanner entrada = new Scanner(System.in);
@@ -104,7 +109,7 @@ public class MainClass {
         Scanner entrada = new Scanner(System.in);
         return entrada.nextInt();
     }
-
+// ------------ Funcionario ------------------------------
     public static void inserirProduto(){
         System.out.println("--> Inserindo produto: ");
 
@@ -169,6 +174,30 @@ public class MainClass {
         dao.AtualizarId(produto);
     }
 
+    public static void listarCliente(){
+        System.out.println("--> Listando clientes: ");
+        DAO<Cliente> dao = new DAO<>(Cliente.class);
+        List<Cliente> clientes = dao.obterTodos();
+        for (Cliente c: clientes){
+            System.out.println(c);
+        }
+    }
+//------------- Cliente ----------------------------------
     public static void inserirCarrinho(){
+    }
+
+    public static void ClienteCadastro(){
+        System.out.println("--> Cadastro Cliente: ");
+
+        Scanner entrada = new Scanner(System.in);
+        System.out.println("Informe seu nome: ");
+        String nome = entrada.nextLine();
+        System.out.println("Informe seu CPF: ");
+        String cpf = entrada.nextLine();
+        System.out.println("Informe seu Email: ");
+        String email = entrada.nextLine();
+        Cliente novoCliente = new Cliente(nome,cpf,email);
+        DAO<Cliente> dao = new DAO<>(Cliente.class);
+        dao.incluirAtomico(novoCliente);
     }
 }
