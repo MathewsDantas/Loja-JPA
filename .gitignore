@@ -1,8 +1,3 @@
 # Project exclude paths
 /target/
-src/main/java/modelo/AlterarCliente/
-/ObterCliente/
-/NovoCliente/
-/NovoProduto/
-/ObterProduto/
-/RemoverCliente/
+/ignorados/
