@@ -20,6 +20,11 @@ public class Pedido {
     @OneToMany(mappedBy = "pedido")
     private List<VendaItem> itens;
 
+    public Pedido(Cliente cliente) {
+        this.data = new Date();
+        this.cliente = cliente;
+    }
+
     public Pedido() {
         this(new Date());
     }

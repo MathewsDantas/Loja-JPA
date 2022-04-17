@@ -1,8 +1,10 @@
 import infra.DAO;
 import modelo.Cliente;
+import modelo.Pedido;
 import modelo.Produto;
+import modelo.VendaItem;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -51,7 +53,7 @@ public class MainClass {
         while (op != 0);
         System.out.println("-> Finalizado. ");
     }
-
+    // ---------------- Menus --------------------------------------------
     public static int menuFuncionario(){
         System.out.println("------ MENU FUNCIONARIO ------");
         System.out.println("1 - Inserir Produto.");
@@ -67,7 +69,7 @@ public class MainClass {
     }
 
     public static int menuCliente(){
-        System.out.println("------ MENU CLIENTE ------");
+        System.out.println("------ BEM VINDO "+ clienteLogin.getNome()+" ------");
         System.out.println("1 - Comprar.");
         System.out.println("2 - Visualizar carrinho.");
         System.out.println("3 - Finalizar compra.");
@@ -90,9 +92,13 @@ public class MainClass {
 
     public static void ClienteLogin(){
         System.out.println("------ Login do Cliente ------");
-        // listar os clientes
-        // informar o id do cliente
-        // clientelogin = recebe o cliente.
+        listarCliente();
+        System.out.println("Informe o seu ID: ");
+        Scanner entrada = new Scanner(System.in);
+        Long id = entrada.nextLong();
+        entrada.nextLine();
+        DAO<Cliente> dao = new DAO<>(Cliente.class);
+        clienteLogin = dao.obterPorId(id);
     }
 
     public static void ClienteLogout(){
@@ -109,7 +115,7 @@ public class MainClass {
         Scanner entrada = new Scanner(System.in);
         return entrada.nextInt();
     }
-// ------------ Funcionario ------------------------------
+// ------------ Funcionario -------------------------------------------
     public static void inserirProduto(){
         System.out.println("--> Inserindo produto: ");
 
@@ -182,8 +188,32 @@ public class MainClass {
             System.out.println(c);
         }
     }
-//------------- Cliente ----------------------------------
-    public static void inserirCarrinho(){
+//------------- Cliente --------------------------------------------------
+    public static void inserirCarrinho() {
+        int pedir = 0;
+        Pedido novoPedido = new Pedido(clienteLogin);
+        DAO<Pedido> daoPedi = new DAO<>(Pedido.class);
+        daoPedi.incluirAtomico(novoPedido);
+        DAO<VendaItem> daoVend = new DAO<>(VendaItem.class);
+        DAO<Produto> daoProd = new DAO<>(Produto.class);
+        do {
+            listarProduto();
+            System.out.println("Informe o Id do produto para ser adicionado ao seu carrinho: ");
+            Scanner entrada = new Scanner(System.in);
+            long id = entrada.nextLong();
+            System.out.println("Informe a qtd. do produto que deseja: ");
+            long qtd = entrada.nextLong();
+
+            Produto produto = daoProd.obterPorId(id);
+
+            VendaItem itemEscolhido = new VendaItem(qtd, produto, novoPedido);
+            daoVend.incluirAtomico(itemEscolhido);
+
+            System.out.println("Deseja inserir outro produto ao seu pedido[SIM - 1 / NAO - 0]?");
+            pedir = entrada.nextInt();
+
+        } while (pedir != 0);
+
     }
 
     public static void ClienteCadastro(){
