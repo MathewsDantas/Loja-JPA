@@ -4,7 +4,6 @@ import modelo.Pedido;
 import modelo.Produto;
 import modelo.VendaItem;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -30,6 +29,7 @@ public class MainClass {
                     case 3 -> excluirProduto();
                     case 4 -> atualizarProduto();
                     case 5 -> listarCliente();
+                    case 6 -> listarPedido();
                     case 99 -> perfil = 0;
                 }
             }
@@ -37,16 +37,17 @@ public class MainClass {
             if (perfil == 1 && clienteLogin == null){
                 op = menuClienteLogin();
                 switch (op){
-                    case 1 -> ClienteLogin();
-                    case 2 -> ClienteCadastro();
+                    case 1 -> clienteLogin();
+                    case 2 -> clienteCadastro();
                     case 99 -> perfil = 0;
                 }
             }
             if (perfil == 1 && clienteLogin != null){
                 op = menuCliente();
                 switch (op){
-                    case 1 -> inserirCarrinho();
-                    case 99 -> ClienteLogout();
+                    case 1 -> clienteComprar();
+                    case 2 -> clienteVisualizarPedidos();
+                    case 99 -> clienteLogout();
                 }
             }
         }
@@ -61,6 +62,7 @@ public class MainClass {
         System.out.println("3 - Excluir Produto.");
         System.out.println("4 - Atualizar Produto.");
         System.out.println("5 - Listar Clientes.");
+        System.out.println("6 - Listar pedidos.");
         System.out.println("0 - Finalizar.");
         System.out.println("99 - Voltar.");
         System.out.println("Informe a opcao: ");
@@ -71,8 +73,7 @@ public class MainClass {
     public static int menuCliente(){
         System.out.println("------ BEM VINDO "+ clienteLogin.getNome()+" ------");
         System.out.println("1 - Comprar.");
-        System.out.println("2 - Visualizar carrinho.");
-        System.out.println("3 - Finalizar compra.");
+        System.out.println("2 - Visualizar pedidos.");
         System.out.println("99 - Voltar.");
         System.out.println("0 - Finalizar.");
         System.out.println("Informe a opcao: ");
@@ -90,7 +91,7 @@ public class MainClass {
         return entrada.nextInt();
     }
 
-    public static void ClienteLogin(){
+    public static void clienteLogin(){
         System.out.println("------ Login do Cliente ------");
         listarCliente();
         System.out.println("Informe o seu ID: ");
@@ -101,7 +102,7 @@ public class MainClass {
         clienteLogin = dao.obterPorId(id);
     }
 
-    public static void ClienteLogout(){
+    public static void clienteLogout(){
         System.out.println("Logout Cliente.");
         clienteLogin = null;
     }
@@ -188,8 +189,16 @@ public class MainClass {
             System.out.println(c);
         }
     }
+
+    public static void listarPedido(){
+        DAO<Pedido> dao = new DAO<>(Pedido.class);
+        List<Pedido> pedidos = dao.obterTodos();
+        for (Pedido p: pedidos){
+            System.out.println(p);
+        }
+    }
 //------------- Cliente --------------------------------------------------
-    public static void inserirCarrinho() {
+    public static void clienteComprar() {
         int pedir = 0;
         Pedido novoPedido = new Pedido(clienteLogin);
         DAO<Pedido> daoPedi = new DAO<>(Pedido.class);
@@ -213,10 +222,12 @@ public class MainClass {
             pedir = entrada.nextInt();
 
         } while (pedir != 0);
-
+        daoPedi.fechar();
+        daoVend.fechar();
+        daoProd.fechar();
     }
 
-    public static void ClienteCadastro(){
+    public static void clienteCadastro(){
         System.out.println("--> Cadastro Cliente: ");
 
         Scanner entrada = new Scanner(System.in);
@@ -229,5 +240,12 @@ public class MainClass {
         Cliente novoCliente = new Cliente(nome,cpf,email);
         DAO<Cliente> dao = new DAO<>(Cliente.class);
         dao.incluirAtomico(novoCliente);
+    }
+
+    public static void clienteVisualizarPedidos(){
+        List<Pedido> pedidos = clienteLogin.getPedidos();
+        for (Pedido p: pedidos){
+            System.out.println(p);
+        }
     }
 }
